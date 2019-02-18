@@ -1,10 +1,17 @@
 const Reconciler = {
-    diff: (virtualElement, container, oldDomElement) => {
+    diff: (virtualElement, container, oldDomElement, parentComponent) => {
         const oldVirtualElement = oldDomElement && oldDomElement._virtualElement;
-        if ( oldVirtualElement && oldVirtualElement.type === virtualElement.type ) {
+        const oldComponent = oldVirtualElement && oldVirtualElement.component;
+
+        if (typeof virtualElement.type === 'function') {
+            console.log('isFunction');
+            Reconciler.diffComponent(virtualElement, container, oldComponent, oldDomElement, parentComponent);
+        } else if (oldVirtualElement && oldVirtualElement.type === virtualElement.type) {
             if (oldVirtualElement.type === 'text') {
+                console.log('isText');
                 Reconciler.updateTextNode(oldDomElement, virtualElement, oldVirtualElement);
             } else {
+                console.log('isDom');
                 Reconciler.updateDomElement(oldDomElement, virtualElement, oldVirtualElement);
             }
             // save the virtualElement on the domElement
@@ -25,7 +32,32 @@ const Reconciler = {
         }
     },
 
-    mountElement: (virtualElement, container, oldDomElement) => {
+    mountElement: (element, container, oldDomNode, parentComponent) => {
+        if (typeof element.type === 'function') {
+            Reconciler.mountComponent(element, container, oldDomNode, parentComponent);
+        } else {
+            Reconciler.mountSimpleNode(element, container, oldDomNode);
+        }
+    },
+
+    mountComponent: (virtualElement, container, oldDomElement, parentComponent) => {
+        const component = new virtualElement.type(virtualElement.props);
+        const nextElement = component.render();
+        if (parentComponent) {
+            const root = parentComponent.getRoot();
+            nextElement.component = root;
+            parentComponent.setChild(component);
+        } else {
+            nextElement.component = component;
+        }
+        if (typeof nextElement.type === 'function') {
+            Reconciler.mountComponent(nextElement, container, oldDomElement, component);
+        } else {
+            Reconciler.diff(nextElement, container, oldDomElement);
+        }
+    },
+
+    mountSimpleNode: (virtualElement, container, oldDomElement) => {
         let newDomElement;
         const nextSibling = oldDomElement && oldDomElement.nextSibling;
         if (virtualElement.type === 'text') {
@@ -101,6 +133,28 @@ const Reconciler = {
         });
     },
 
+    diffComponent: (newVirtualElement, container, oldComponent, domElement, parentComponent) => {
+        if (oldComponent && newVirtualElement.type === oldComponent.constructor) {
+            // update component
+            oldComponent.updateProps(newVirtualElement.props);
+            const nextElement = oldComponent.render();
+            nextElement.component = parentComponent || oldComponent;
+            const childComponent = oldComponent.getChild();
+            if (childComponent) {
+                Reconciler.diffComponent(
+                    nextElement,
+                    childComponent,
+                    container,
+                    domElement,
+                    oldComponent
+                );
+            } else {
+                Reconciler.diff(nextElement, container, domElement, oldComponent);
+            }
+        } else {
+            Reconciler.mountElement(newVirtualElement, container, domElement, parentComponent);
+        }
+    }
 
 };
 

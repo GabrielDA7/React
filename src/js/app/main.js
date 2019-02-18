@@ -1,36 +1,27 @@
 import ReactDom from '../core/ReactDom.js';
-import React from '../core/React.js';
+import {React, Component} from '../core/React.js';
 
-function render(text, container) {
-    ReactDom.render(
-        React.createElement('div', {}, [
-
-            React.createElement('h1', {}, [
-                'First MVR App'
-            ]),
-
-            React.createElement('p', {}, [
-                text,
-                React.createElement('span', {}, [
-                    ' World'
+class Message extends Component {
+    render() {
+        return (
+            React.createElement('div', {}, [
+                React.createElement('p', {}, [
+                    this.props.text,
+                    React.createElement('span', {}, [
+                        ' World'
+                    ])
+                ]),
+                React.createElement('button', {
+                    onClick: this.props.onButtonClick
+                }, [
+                    'click me'
                 ])
-            ]),
-
-            React.createElement('button', {
-                onClick: () => {
-                    const newText = text === 'Hello' ? 'Goodbye' : 'Hello';
-                    render(newText, container);
-                }
-            }, [
-                'click me'
             ])
-        ]),
-        container
-    );
+        );
+    }
 }
 
-window.FirstReactApp = (container) => {
-    render('Hello', container);
-};
-
-FirstReactApp(document.getElementById("root"));
+ReactDom.render(
+    React.createElement(Message),
+    document.getElementById("root")
+);
