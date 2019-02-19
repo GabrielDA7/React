@@ -2,16 +2,12 @@ const Reconciler = {
     diff: (virtualElement, container, oldDomElement, parentComponent) => {
         const oldVirtualElement = oldDomElement && oldDomElement._virtualElement;
         const oldComponent = oldVirtualElement && oldVirtualElement.component;
-
         if (typeof virtualElement.type === 'function') {
-            console.log('isFunction');
             Reconciler.diffComponent(virtualElement, container, oldComponent, oldDomElement, parentComponent);
         } else if (oldVirtualElement && oldVirtualElement.type === virtualElement.type) {
             if (oldVirtualElement.type === 'text') {
-                console.log('isText');
                 Reconciler.updateTextNode(oldDomElement, virtualElement, oldVirtualElement);
             } else {
-                console.log('isDom');
                 Reconciler.updateDomElement(oldDomElement, virtualElement, oldVirtualElement);
             }
             // save the virtualElement on the domElement
@@ -42,6 +38,7 @@ const Reconciler = {
 
     mountComponent: (virtualElement, container, oldDomElement, parentComponent) => {
         const component = new virtualElement.type(virtualElement.props);
+        component.setStateCallback(Reconciler.handleComponentStateChange);
         const nextElement = component.render();
         if (parentComponent) {
             const root = parentComponent.getRoot();
@@ -80,6 +77,14 @@ const Reconciler = {
         } else {
             container.appendChild(newDomElement);
         }
+
+        // add reference to domElement into Component
+        let component = virtualElement.component;
+        while (component) {
+            component.setDomElement(newDomElement);
+            component = component.getChild();
+        }
+
         // recursively call mountElement with all child elements
         virtualElement.children.forEach((childElement) => {
             Reconciler.mountElement(childElement, newDomElement);
@@ -153,6 +158,29 @@ const Reconciler = {
             }
         } else {
             Reconciler.mountElement(newVirtualElement, container, domElement, parentComponent);
+        }
+    },
+
+    handleComponentStateChange: (component, nextState) => {
+        const prevState = component.state;
+        if (component.shouldComponentUpdate(component.props, nextState)) {
+            component.componentWillUpdate(component.props, nextState);
+            component.updateState(nextState);
+
+            const nextElement = component.render();
+            nextElement.component = component.getRoot();
+            const domElement = component.getDomElement();
+            const container = domElement.parentNode;
+            const childComponent = component.getChild();
+
+            if (childComponent) {
+                Reconciler.diffComponent(nextElement, childComponent, container, domElement, component);
+            } else {
+                Reconciler.diff(nextElement, container, domElement, component);
+            }
+
+            // finally we call componentDidUpdate
+            component.componentDidUpdate(component.props, prevState);
         }
     }
 

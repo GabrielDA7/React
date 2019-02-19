@@ -1,10 +1,17 @@
-export const React = {
-    createElement: (type, attributes = {}, children = []) => {
+import PropTypes from './PropTypes.js';
+import ReactUtils from './ReactUtils.js';
 
-        // return virtual children element array
-        const childElements = children.map(child => (
-            typeof child === 'string' ? React.createElement('text', { textContent: child }) : child
-        ));
+const React = function() {
+    this.createElement = (type, attributes = {}, children = []) => {
+
+        if(typeof type === "function") {
+            console.log('props', type.propTypes);
+            PropTypes.propTypesChecker(attributes, type.propTypes);
+        }
+
+        const childElements = ReactUtils.flatten(children).map(child => (
+            typeof child === 'string' ? this.createElement('text', {textContent: child}) : child
+        )).filter(child => child);
 
         return {
             type,
@@ -14,35 +21,8 @@ export const React = {
                 attributes
             )
         };
-    }
+    };
 };
 
-export class Component {
-    constructor(props) {
-        this.props = props;
-    }
-
-    updateProps(newProps) {
-        this.props = newProps;
-    }
-
-    setChild(component) {
-        this._child = component;
-    }
-
-    getChild() {
-        return this._child;
-    }
-
-    getRoot() {
-        let component = this;
-        let res;
-        while (component) {
-            res = component;
-            component = component._parentComponent;
-        }
-        return res;
-    }
-
-    render() {}
-}
+const react = new React();
+export default react;
