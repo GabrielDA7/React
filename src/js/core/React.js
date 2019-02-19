@@ -1,5 +1,5 @@
 import PropTypes from './PropTypes.js';
-import ReactUtils from './ReactUtils.js';
+import ReactUtils from './utils/ReactUtils.js';
 
 const React = function() {
     this.createElement = (type, attributes = {}, children = []) => {

@@ -1,4 +1,4 @@
-import PropTypesUtils from './PropTypesUtils.js';
+import PropTypesUtils from './utils/PropTypesUtils.js';
 
 const PropTypes = {
     propTypesChecker: (props, propTypes) => {

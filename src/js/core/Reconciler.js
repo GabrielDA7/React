@@ -1,11 +1,12 @@
 const Reconciler = {
     diff: (virtualElement, container, oldDomElement, parentComponent) => {
-        const oldVirtualElement = oldDomElement && oldDomElement._virtualElement;
-        const oldComponent = oldVirtualElement && oldVirtualElement.component;
-        if (typeof virtualElement.type === 'function') {
+        const oldVirtualElement = oldDomElement && oldDomElement._virtualElement; // bool a ancien dom
+        const oldComponent = oldVirtualElement && oldVirtualElement.component; // bool a ancien composant
+
+        if (typeof virtualElement.type === 'function') { // component
             Reconciler.diffComponent(virtualElement, container, oldComponent, oldDomElement, parentComponent);
         } else if (oldVirtualElement && oldVirtualElement.type === virtualElement.type) {
-            if (oldVirtualElement.type === 'text') {
+            if (oldVirtualElement.type === 'text') { // txt
                 Reconciler.updateTextNode(oldDomElement, virtualElement, oldVirtualElement);
             } else {
                 Reconciler.updateDomElement(oldDomElement, virtualElement, oldVirtualElement);
@@ -20,6 +21,7 @@ const Reconciler = {
             const oldChildren = oldDomElement.childNodes;
             if (oldChildren.length > virtualElement.children.length) {
                 for (let i = oldChildren.length - 1; i >= virtualElement.children.length; i -= 1) {
+                    //willUnmount
                     oldChildren[i].remove();
                 }
             }
