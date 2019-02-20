@@ -55,18 +55,13 @@ const PropTypesUtils = {
     },
 
     isClass: (value) => {
-        const isCtorClass = value.constructor
-            && value.constructor.toString().substring(0, 5) === 'class'
+        const isCtorClass = value.constructor && value.constructor.toString().substring(0, 5) === 'class';
         if(value.prototype === undefined) {
             return isCtorClass
         }
-        const isPrototypeCtorClass = value.prototype.constructor
-            && value.prototype.constructor.toString
-            && value.prototype.constructor.toString().substring(0, 5) === 'class'
+        const isPrototypeCtorClass = value.prototype.constructor && value.prototype.constructor.toString && value.prototype.constructor.toString().substring(0, 5) === 'class';
         return isCtorClass || isPrototypeCtorClass
-    }
-
-
+    },
 
 };
 

@@ -24,7 +24,7 @@ class Message extends Component {
             React.createElement('div', {class: "test"}, [
                 React.createElement(Counter, {name: `${this.state.name}`}, []),
                 React.createElement(Counter, {name: `${this.state.name}`}, []),
-                //React.createElement(my, {name: `${this.state.name}`}, [])
+                React.createElement(my, {name: `${this.state.name}`}, [])
             ])
         );
     }
@@ -64,8 +64,8 @@ class Counter extends Component {
 }
 
 Message.propTypes = {
-    name: {type: "array", required: true},
-    text: {type: "text", required: true}
+    name: {type: "string", required: true},
+    text: {type: "string", required: true}
 };
 
 ReactDom.render(React.createElement(Message, {text: 'coucou', name: 'Gab'}, []), document.getElementById("root"));

@@ -5,7 +5,6 @@ const React = function() {
     this.createElement = (type, attributes = {}, children = []) => {
 
         if(typeof type === "function") {
-            console.log('props', type.propTypes);
             PropTypes.propTypesChecker(attributes, type.propTypes);
         }
 
