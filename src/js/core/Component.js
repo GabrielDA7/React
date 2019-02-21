@@ -1,3 +1,6 @@
+import ReactDom from './ReactDom.js';
+import React from './React.js';
+
 export class Component {
     constructor(props) {
         this.props = props || {};
@@ -30,6 +33,10 @@ export class Component {
     componentDidUpdate() {}
 
     componentWillUnmount() {}
+
+    forceUpdate() {
+        ReactDom.render(React.createElement(this.constructor.name, this.props, []));
+    }
 
     setChild(component) {
         this._child = component;

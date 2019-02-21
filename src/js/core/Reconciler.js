@@ -2,6 +2,7 @@ import PropTypesUtils from "./utils/PropTypesUtils.js";
 
 const Reconciler = {
     diff: (virtualElement, container, oldDomElement, parentComponent) => {
+        console.log(virtualElement);
         const oldVirtualElement = oldDomElement && oldDomElement._virtualElement;
         const oldComponent = oldVirtualElement && oldVirtualElement.component;
 
@@ -40,20 +41,25 @@ const Reconciler = {
 
     mountComponent: (virtualElement, container, oldDomElement, parentComponent) => {
         const component = new virtualElement.type(virtualElement.props);
-        component.setStateCallback(Reconciler.handleComponentStateChange);
-        const nextElement = component.render();
-        if (parentComponent) {
-            const root = parentComponent.getRoot();
-            nextElement.component = root;
-            parentComponent.setChild(component);
-        } else {
-            nextElement.component = component;
-        }
 
-        if (PropTypesUtils.isFunction(nextElement.type)) {
-            Reconciler.mountComponent(nextElement, container, oldDomElement, component);
-        } else {
-            Reconciler.diff(nextElement, container, oldDomElement);
+        component.setStateCallback(Reconciler.handleComponentStateChange);
+        component.componentWillMount();
+
+        const nextElement = component.render();
+        if(nextElement) {
+            if (parentComponent) {
+                const root = parentComponent.getRoot();
+                nextElement.component = root;
+                parentComponent.setChild(component);
+            } else {
+                nextElement.component = component;
+            }
+
+            if (PropTypesUtils.isFunction(nextElement.type)) {
+                Reconciler.mountComponent(nextElement, container, oldDomElement, component);
+            } else {
+                Reconciler.diff(nextElement, container, oldDomElement);
+            }
         }
     },
 
@@ -114,12 +120,12 @@ const Reconciler = {
                     }
                 } else if (propName === 'value' || propName === 'checked') {
                     domElement[propName] = newProp;
-                } else if (propName !== 'children') { // ignore the 'children' prop
+                } else if (propName !== 'children') {
                     domElement.setAttribute(propName, newProps[propName]);
                 }
             }
         });
-        // remove oldProps
+
         Object.keys(oldProps).forEach((propName) => {
             const newProp = newProps[propName];
             const oldProp = oldProps[propName];
@@ -138,12 +144,7 @@ const Reconciler = {
         if (oldComponent && newVirtualElement.type === oldComponent.constructor) {
             // update component
             oldComponent.updateProps(newVirtualElement.props);
-            if(PropTypesUtils.isClass(oldComponent)) {
-                console.log('class', oldComponent);
-                const nextElement = oldComponent.render();
-            } else {
-                console.log('dom', oldComponent);
-            }
+            const nextElement = oldComponent.render();
             nextElement.component = parentComponent || oldComponent;
             const childComponent = oldComponent.getChild();
 
@@ -159,14 +160,17 @@ const Reconciler = {
 
     handleComponentStateChange: (component, nextState) => {
         const prevState = component.state;
+
         if (component.shouldComponentUpdate(component.props, nextState)) {
             component.componentWillUpdate(component.props, nextState);
             component.updateState(nextState);
 
             const nextElement = component.render();
+
             nextElement.component = component.getRoot();
             const domElement = component.getDomElement();
             const container = domElement.parentNode;
+
             const childComponent = component.getChild();
 
             if (childComponent) {

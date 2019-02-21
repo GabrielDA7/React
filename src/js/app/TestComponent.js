@@ -7,7 +7,7 @@ let my = function(props) {
 };
 
 
-class Message extends Component {
+class TestComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {name: 'Gab'}
@@ -61,7 +61,9 @@ class Counter extends Component {
     }
 }
 
-Message.propTypes = {
+TestComponent.propTypes = {
     name: {type: "string", required: true},
     text: {type: "string", required: true}
 };
+
+export default TestComponent;
