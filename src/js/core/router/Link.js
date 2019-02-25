@@ -16,7 +16,7 @@ class Link extends Component {
     render() {
         const { to, children } = this.props;
 
-        return React.createElement('a', {href: `${to}`, onClick: this.handleClick.bind(this)}, children);
+        return React.createElement('a', Object.assign({href: `${to}`, onClick: this.handleClick.bind(this)}, {...this.props, ...{to: undefined, children: undefined}}) , children);
     }
 }
 

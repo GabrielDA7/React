@@ -1,5 +1,5 @@
 const matchPath = (pathname, options) => {
-    const { exact = false, path } = options;
+    const { path } = options;
 
     if (!path) {
         return {
@@ -13,19 +13,16 @@ const matchPath = (pathname, options) => {
 
     if (!match) {
         // There wasn't a match.
-        return null;
+        return {
+            path: path,
+            url: null,
+            isExact: false
+        };
     }
 
     const url = match[0];
     const isExact = pathname === url;
 
-    if (exact && !isExact) {
-        // There was a match, but it wasn't
-        // an exact match as specified by
-        // the exact prop.
-
-        return null;
-    }
 
     return {
         path,
