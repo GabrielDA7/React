@@ -19,7 +19,7 @@ class About extends Component {
                     React.createElement('p', {}, ["Lorem ipsum dolor sit amet, consectetur adipiscing elit. In at lacinia ipsum. Sed blandit enim at vehicula porta. Praesent pretium ligula ut rutrum blandit. Etiam at aliquam justo. Nam eleifend, mi sit amet tincidunt pretium, odio augue mollis ante, eget rutrum erat ipsum at lacus. Proin ac lacus iaculis, mattis justo nec, cursus lacus. Nunc mattis convallis molestie. Phasellus ornare suscipit tortor luctus vestibulum. Etiam dictum sed purus id gravida. Quisque tincidunt velit ut ante tristique, et fermentum lectus fermentum. Suspendisse consequat vitae felis nec fermentum. Nam mauris eros, gravida vitae nisi sit amet, semper porttitor sem. Duis et rutrum quam, non facilisis eros. In iaculis risus vel turpis tristique, eget feugiat lacus dignissim. "])
                 ]),
                 React.createElement('div', {class:'col-6'}, [
-                    React.createElement(Counter, {}, [])
+                    React.createElement(Counter, {name: "test"}, [])
                 ])
             ]),
         ]);

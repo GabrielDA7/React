@@ -1,6 +1,7 @@
 import Component from "../core/Component.js";
 import React from "../core/React.js";
 
+
 class Counter extends Component {
     constructor(props) {
         super(props);
@@ -10,9 +11,8 @@ class Counter extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         if(nextState.value < 4) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     onPlusClick() {
@@ -38,11 +38,15 @@ class Counter extends Component {
                     ])
                 ]),
                 React.createElement('p', {class: "card-text"}, ["Lorem ipsum dolor sit amet, consectetur adipiscing elit. In at lacinia ipsum. Sed blandit enim at vehicula porta. Praesent pretium ligula ut rutrum blandit. Etiam at aliquam justo."]),
-                //React.createElement('h2', {}, [`${this.props.name}`]),
+                React.createElement('h2', {}, [`${this.props.name}`]),
             ])
         ]);
     }
 }
+
+Counter.propTypes = {
+    name: {type: "string", required: true},
+};
 
 
 export default Counter;

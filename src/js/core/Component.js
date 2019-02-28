@@ -1,8 +1,3 @@
-import ReactDom from './ReactDom.js';
-import React from './React.js';
-import Route from './router/Route.js';
-import {instances} from "./router/Instance.js";
-
 export class Component {
     constructor(props) {
         this.props = props || {};

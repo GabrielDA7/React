@@ -223,9 +223,10 @@ const Reconciler = {
 
             const nextElement = component.render();
             nextElement.component = component.getRoot();
+
             const domElement = component.getDomElement();
-            console.log('dom',domElement);
             const container = domElement.parentNode;
+
             const childComponent = component.getChild();
             if (childComponent) {
                 Reconciler.diffComponent(
