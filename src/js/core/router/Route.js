@@ -1,6 +1,8 @@
 import React from '../React.js';
 import Component from '../Component.js';
 import matchPath from './Match.js';
+import PropTypes from "../PropTypes.js";
+
 
 class Route extends Component {
     constructor(props) {
@@ -24,9 +26,13 @@ class Route extends Component {
 }
 
 Route.propTypes = {
-    exact: {type: "bool"},
+    exact: {type: "boolean"},
     path: {type: "string"},
-    component: {type: "function"},
+    component: PropTypes.arrayOf([
+        {type: "bool"},
+        {type: "function"},
+        {type: "bool"}
+    ])
 };
 
 export default Route;

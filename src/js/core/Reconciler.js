@@ -198,7 +198,7 @@ const Reconciler = {
         component.componentWillMount();
 
         // si render return un component on boucle
-        if (typeof nextElement.type === 'function') {
+        if (PropTypesUtils.isFunction(nextElement.type)) {
             if(nextElement.component instanceof Route) {
                 if(nextElement.props.match.isExact) {
                     Reconciler.mountComponent(nextElement, container, oldDomElement, component, parentComponent);
